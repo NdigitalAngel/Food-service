@@ -115,7 +115,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const modalTimerId = setTimeout(openModal, 10000);
+    const modalTimerId = setTimeout(openModal, 100000);
 
     function showModalByScroll() {
         if (
@@ -182,8 +182,15 @@ window.addEventListener("DOMContentLoaded", () => {
     };
 
     getResource("http://localhost:3000/menu").then((data) => {
-        data.forEach(({img, altimg, title, descr, price}) => {
-            new MenuCard(img, altimg, title, descr, price).render();
+        data.forEach(({ img, altimg, title, descr, price }) => {
+            new MenuCard(
+                img,
+                altimg,
+                title,
+                descr,
+                price,
+                ".menu .container"
+            ).render();
         });
     });
 
@@ -268,4 +275,53 @@ window.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost:3000/menu")
         .then((data) => data.json())
         .then((res) => console.log(res));
+
+    //Slider
+
+    const slide = document.querySelectorAll(".offer__slide"),
+        prev = document.querySelector(".offer__slider-prev"),
+        next = document.querySelector(".offer__slider-next"),
+        total = document.querySelector("#total"),
+        current = document.querySelector("#current");
+    let slideIndex = 1;
+
+    if (slide.length < 10) {
+        total.textContent = `0${slide.length}`
+    } else {
+        total.textContent = slide.lenght;
+    }
+
+    showSlides(slideIndex);
+
+    function showSlides(n) {
+        if (n > slide.length) {
+            slideIndex = 1;
+        }
+
+        if (n < 1) {
+            slideIndex = slide.length;
+        }
+
+        slide.forEach((item) => (item.style.display = "none"));
+
+        slide[slideIndex - 1].style.display = "block";
+
+        if (slide.length < 10) {
+            current.textContent = `0${slideIndex}`
+        } else {
+            current.textContent = slideIndex;
+        }
+    }
+
+    function plusSlides(n) {
+        showSlides((slideIndex += n));
+    }
+
+    prev.addEventListener("click", () => {
+        plusSlides(-1);
+    });
+
+    next.addEventListener("click", () => {
+        plusSlides(1);
+    });
 });
